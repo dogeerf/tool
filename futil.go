@@ -104,23 +104,24 @@ func main() {
 		log.Fatalf("OpenFile:%s \n", err.Error())
 	}
 
+	mainFlag := false
 	oldStrs := readAll(file)
 	var newStrs []string
 
 	if *uniqueFlag {
 		newStrs = unique(oldStrs)
-	} else {
+		mainFlag = true
+	}
+	if *sortFlag {
+		newStrs = sortStrs(newStrs)
+		mainFlag = true
+	}
+
+	if !mainFlag {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
 
-	if *sortFlag {
-		newStrs = sortStrs(newStrs)
-	}
-
-	//	for _, str := range newStrs {
-	//		println(str)
-	//	}
 	if len(newStrs) != 0 {
 		writeString(file, newStrs)
 	}
