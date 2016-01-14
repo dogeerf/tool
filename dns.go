@@ -25,8 +25,6 @@ func CheckErr(err error, operating string) {
 func main() {
 	fmt.Printf("==============================================================\n")
 
-	//var name []string
-
 	ip := "192.168.133.100"
 	name := ip
 	names, err := net.LookupAddr(ip)
