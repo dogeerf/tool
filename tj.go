@@ -60,10 +60,13 @@ var (
 	filePath       string
 	redisKeyRegexp *regexp.Regexp
 	redisStats     []*RedisStat
+	seqs           map[string]string
+	minCount       int
 )
 
 func init() {
 	flag.StringVar(&filePath, "f", "", "set file path")
+	flag.IntVar(&minCount, "m", 5, "set mix count")
 	flag.Parse()
 
 	if filePath == "" {
@@ -72,6 +75,12 @@ func init() {
 	}
 	redisKeyRegexp := regexp.MustCompile("_|-|.|:")
 	_ = redisKeyRegexp
+	seqs = make(map[string]string)
+	seqs["_"] = "_"
+	seqs["."] = "."
+	seqs["|"] = "|"
+	seqs["-"] = "-"
+	seqs[":"] = ":"
 }
 
 type KeyStat struct {
@@ -190,7 +199,7 @@ type RedisStat struct {
 func (this RedisStat) Show() {
 	keySize := fmt.Sprintf("%dM", this.KeySize/1024/1024)
 	valueSize := fmt.Sprintf("%dM", this.ValueSize/1024/1024)
-	fmt.Printf("path=%-100s childrens=%-8d num=%-8d expired=%-8d keySize=%-3s valueSize=%-3s\n", this.Path, this.Childrens, this.Num, this.Expired, keySize, valueSize)
+	fmt.Printf("path=%-100s childrens=%-8d num=%-8d expired=%-8d keySize=%-4s valueSize=%-4s\n", this.Path, this.Childrens, this.Num, this.Expired, keySize, valueSize)
 }
 
 func (this *Node) Show(path string, count int) (err error) {
@@ -255,21 +264,28 @@ func (this *Tree) AddNodesToTree(field []string) (node *Node, err error) {
 	return node, err
 }
 
-func (this *Tree) FindNodeBYTree(field []string) (node *Node, err error) {
-	for deep, name := range field {
-		_ = deep
-		for _, node := range this.Childrens {
-			node, err = node.FindChildrenByNode(name)
-			if err != nil {
-				return node, err
-			}
+func SplitAfter(str string) (ss []string) {
+	tmpSs := strings.SplitAfterN(str, "", -1)
+	var tmpStr string
+	for index, chat := range tmpSs {
+		tmpStr = tmpStr + chat
+		if _, find := seqs[chat]; find {
+			ss = append(ss, tmpStr)
+			tmpStr = ""
 		}
+
+		if index == len(tmpSs) {
+			ss = append(ss, tmpStr)
+			tmpStr = ""
+		}
+
 	}
-	return node, err
+	return
 }
 
 func (this *Tree) AddKeyStatToTree(keyStat *KeyStat) (err error) {
-	field := strings.SplitAfter(keyStat.Key, ".")
+	//field := strings.SplitAfter(keyStat.Key, ".")
+	field := SplitAfter(keyStat.Key)
 	node, err := this.AddNodesToTree(field)
 	CheckErr(err, "add nodels to tree")
 	err = node.AddKeyStatToChildren(keyStat)
@@ -297,14 +313,12 @@ func main() {
 		CheckErr(err, "add keyStat to tree")
 	}
 
-	tree.Show(100)
-
-	//for _, node := range tree.Childrens {
-	//	num := GetNumByNode(node)
-	//	fmt.Printf("%s: %d\n", node.Name, num)
-	//}
+	tree.Show(minCount)
 
 	for _, redisStat := range redisStats {
 		redisStat.Show()
 	}
+
+	//	fmt.Printf("%#v\n", SplitAfter("a.b_c_d|f"))
+
 }
