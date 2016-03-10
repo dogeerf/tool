@@ -13,6 +13,7 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -34,7 +35,7 @@ func GetBytesByFilePath(filePath string) (fileBytes []byte) {
 	CheckErr(err, "open file:"+filePath)
 	fileBytes, err = ioutil.ReadAll(file)
 	CheckErr(err, "read all file:"+filePath)
-	file.Close()
+	//file.Close()
 	return fileBytes
 }
 
@@ -240,6 +241,7 @@ func (this *Node) AddNodeToChildren(name string) (node *Node, err error) {
 	node = NewNode(name)
 	this.Childrens[name] = node
 	this.ChildrenCount = this.ChildrenCount + 1
+
 	return node, err
 }
 
