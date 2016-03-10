@@ -26,7 +26,7 @@ echo "----------------------"
 run_file=`echo $files_path | awk -F "." '{print $1}'`
 echo "*************************************************"
 echo "-------RUN-- $run_file ---START----------"
-time ./$run_file
+time ./$run_file -f 10.json
 echo "----------------------"
 echo "-------RUN-- $run_file ----END-----------"
 echo "----------END--------------"
