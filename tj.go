@@ -88,9 +88,9 @@ type KeyStat struct {
 	Type       string `json:"type"`
 	ExpireAt   uint64 `json:"expireat"`
 	Key        string `json:"key"`
-	FieldCount int    `json:"fieldCount"`
-	KeySize    int    `json:"keySize"`
-	ValueSize  int    `json:"valueSize"`
+	FieldCount int64  `json:"fieldCount"`
+	KeySize    int64  `json:"keySize"`
+	ValueSize  int64  `json:"valueSize"`
 }
 
 type Node struct {
@@ -122,7 +122,7 @@ func NewNode(name string) *Node {
 	}
 }
 
-func GetExpiredByNode(node *Node) (num int) {
+func GetExpiredByNode(node *Node) (num int64) {
 	if node.ChildrenCount == 0 {
 		for _, keyStat := range node.KeyStats {
 			if keyStat.ExpireAt != 0 {
@@ -138,7 +138,7 @@ func GetExpiredByNode(node *Node) (num int) {
 	return num
 }
 
-func GetKeySizeByNode(node *Node) (size int) {
+func GetKeySizeByNode(node *Node) (size int64) {
 	if node.ChildrenCount == 0 {
 		for _, keyStat := range node.KeyStats {
 			size = size + keyStat.KeySize
@@ -151,7 +151,7 @@ func GetKeySizeByNode(node *Node) (size int) {
 	return size
 }
 
-func GetValueSizeByNode(node *Node) (size int) {
+func GetValueSizeByNode(node *Node) (size int64) {
 	if node.ChildrenCount == 0 {
 		for _, keyStat := range node.KeyStats {
 			size = size + keyStat.ValueSize
@@ -164,7 +164,7 @@ func GetValueSizeByNode(node *Node) (size int) {
 	return size
 }
 
-func GetNumByNode(node *Node) (num int) {
+func GetNumByNode(node *Node) (num int64) {
 	if node.ChildrenCount == 0 {
 		return node.KeyStatCount
 	} else {
@@ -176,7 +176,7 @@ func GetNumByNode(node *Node) (num int) {
 	return num
 }
 
-func (this *Node) GetNumByChildrens() (num int) {
+func (this *Node) GetNumByChildrens() (num int64) {
 	if this.ChildrenCount == 0 {
 		num = this.KeyStatCount
 	} else {
@@ -190,10 +190,10 @@ func (this *Node) GetNumByChildrens() (num int) {
 type RedisStat struct {
 	Path      string
 	Childrens int
-	Num       int
-	Expired   int
-	KeySize   int
-	ValueSize int
+	Num       int64
+	Expired   int64
+	KeySize   int64
+	ValueSize int64
 }
 
 func (this RedisStat) Show() {
