@@ -99,7 +99,7 @@ type Node struct {
 	Childrens     map[string]*Node
 	KeyStats      []*KeyStat
 	ChildrenCount int
-	KeyStatCount  int
+	KeyStatCount  int64
 }
 
 type Tree struct {
