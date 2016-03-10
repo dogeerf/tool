@@ -81,6 +81,7 @@ func init() {
 	seqs["|"] = "|"
 	seqs["-"] = "-"
 	seqs[":"] = ":"
+	runtime.GOMAXPROCS(runtime.NumCPU())
 }
 
 type KeyStat struct {
