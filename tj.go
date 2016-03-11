@@ -293,7 +293,9 @@ func SplitAfter(str string) (ss []string) {
 func (this *Tree) AddKeyStatToTree(keyStat *KeyStat) (err error) {
 	//field := strings.SplitAfter(keyStat.Key, ".")
 	field := SplitAfter(keyStat.Key)
-	fmt.Printf("this.AddNodesToTree(field): %v \n", field)
+	if len(field) == 1 && field[0] == "" {
+		continue
+	}
 	node, err := this.AddNodesToTree(field)
 	CheckErr(err, "add nodels to tree")
 	err = node.AddKeyStatToChildren(keyStat)
