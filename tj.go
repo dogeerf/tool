@@ -281,9 +281,8 @@ func SplitAfter(str string) (ss []string) {
 			tmpStr = ""
 		}
 
-		if index == len(tmpSs) {
+		if index+1 == len(tmpSs) {
 			ss = append(ss, tmpStr)
-			tmpStr = ""
 		}
 
 	}
