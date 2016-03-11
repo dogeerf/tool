@@ -13,7 +13,7 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
-	"sync"
+	//"sync"
 	"time"
 )
 
@@ -259,9 +259,12 @@ func (this *Tree) AddNodesToTree(field []string) (node *Node, err error) {
 		if deep == 0 {
 			node, err = this.AddNodeToChildren(name)
 			CheckErr(err, "add node to tree :")
-		} else {
+		} else if node != nil {
 			node, err = node.AddNodeToChildren(name)
 			CheckErr(err, "add node to node :")
+		} else {
+			fmt.Printf("node is nil\n")
+			os.Exit(1)
 		}
 	}
 	return node, err
