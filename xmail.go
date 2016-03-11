@@ -44,7 +44,7 @@ func GenRandn(k int) (ret int) {
 
 func SendSms(msgSend string, phones_slice []int64) {
 	// random choice host
-	hosts := []string{"10.231.144.36", "10.231.144.37"}
+	hosts := []string{"10.231.144.136", "10.231.144.137"}
 	rk := GenRandn(len(hosts))
 	host := hosts[rk]
 	port := "9090"
@@ -75,7 +75,7 @@ func SendSms(msgSend string, phones_slice []int64) {
 func main() {
 	var msgSend, phones string
 	flag.StringVar(&msgSend, "m", "hello, go!!!", "The message want to be send, eg: hello, go")
-	flag.StringVar(&phones, "p", "15210239684", "Who receives the message (at least one, separated by:comma or whitespace)")
+	flag.StringVar(&phones, "p", "138XXXXXXXX", "Who receives the message (at least one, separated by:comma or whitespace)")
 	flag.Parse()
 
 	phones_slice, err_p := TransformPhones(phones)

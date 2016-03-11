@@ -1,1 +1,3 @@
-cp ./futil /home/xiaoju/resource/tools/
+#/bin/bash -
+
+cp ./futil /data/xiaoju/resource/tools/

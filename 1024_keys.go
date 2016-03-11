@@ -1,8 +1,10 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	//	"github.com/garyburd/redigo/redis"
+	"flag"
+	"hash/crc32"
 	"log"
 	"os"
 	"runtime"
@@ -37,28 +39,34 @@ func (this *T) Show() {
 	fmt.Printf("createTime:%v\n", this.createTime)
 }
 
-const (
-	OK_EXIT  = 0
-	ERR_EXIT = 1
-)
+func GetKeys() (keys map[uint32]string) {
+	keys = make(map[uint32]string)
+	for i := 0; ; i++ {
+		value := fmt.Sprintf("%s_%d", "op_test", i)
+		hash32 := crc32.ChecksumIEEE([]byte(value))
+		key := hash32 % 1024
+		if _, find := keys[key]; !find {
+			keys[key] = value
+			if len(keys) == 1024 {
+				return keys
+			}
+		}
+	}
+	return keys
 
-var (
-	filePath string
-)
+}
+
+func SetKeys(keys map[uint32]string) {
+	for key, value := range keys {
+		fmt.Printf("key=%-4d value=%s\n", key, value)
+	}
+}
 
 func init() {
-	flag.StringVar(&filePath, "f", "", "set file path")
-	flag.Parse()
-
-	if filePath == "" {
-		flag.PrintDefaults()
-		os.Exit(1)
-	}
 
 }
 
 func main() {
-	fmt.Printf("==============================================================\n")
-
-	fmt.Printf("==============================================================\n")
+	keys := GetKeys()
+	SetKeys(keys)
 }

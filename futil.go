@@ -12,12 +12,10 @@ import (
 	"strings"
 )
 
-func del() {
-	fmt.Printf("123")
-}
-
-func add() {
-
+func addLines(str string) []string {
+	lines := strings.Split(str, ",")
+	//fmt.Printf("%#v\n", lines)
+	return lines
 }
 
 func unique(lines []string) (strs []string) {
@@ -42,6 +40,7 @@ func unique(lines []string) (strs []string) {
 
 func writeString(file *os.File, strs []string) {
 	str := strings.Join(strs, "\n")
+	str = fmt.Sprintf("%s\n", str)
 	_, err := file.Seek(0, 0)
 	if err != nil {
 		log.Fatalf("Seek:%s\n", err.Error())
@@ -76,10 +75,11 @@ func readAll(file *os.File) (lines []string) {
 }
 
 var (
-	filePath   *string
-	file       *os.File
-	uniqueFlag *bool
-	sortFlag   *bool
+	filePath    *string
+	file        *os.File
+	uniqueFlag  *bool
+	sortFlag    *bool
+	addLinesStr *string
 )
 
 func init() {
@@ -88,6 +88,8 @@ func init() {
 	uniqueFlag = flag.Bool("u", false, "unique")
 	//sort
 	sortFlag = flag.Bool("s", false, "sort")
+	//add lines
+	addLinesStr = flag.String("a", "", "add lines eg: line_1,line_2,line_3,line_4")
 
 	flag.Parse()
 	if *filePath == "" {
@@ -107,11 +109,20 @@ func main() {
 	mainFlag := false
 	oldStrs := readAll(file)
 	var newStrs []string
+	newStrs = oldStrs
 
-	if *uniqueFlag {
-		newStrs = unique(oldStrs)
+	if *addLinesStr != "" {
+		for _, line := range addLines(*addLinesStr) {
+			newStrs = append(newStrs, line)
+		}
 		mainFlag = true
 	}
+
+	if *uniqueFlag {
+		newStrs = unique(newStrs)
+		mainFlag = true
+	}
+
 	if *sortFlag {
 		newStrs = sortStrs(newStrs)
 		mainFlag = true
