@@ -96,7 +96,6 @@ type KeyStat struct {
 }
 
 type Node struct {
-	Root          bool
 	Name          string
 	Childrens     map[string]*Node
 	KeyStats      []*KeyStat
@@ -111,8 +110,10 @@ type Tree struct {
 func NewTree() *Tree {
 	tree := &Tree{}
 	tree.Name = "root."
-	tree.Root = true
 	tree.Childrens = make(map[string]*Node)
+	tree.KeyStats = []*KeyStat{}
+	tree.ChildrenCount = 0
+	tree.KeyStatCount = 0
 	return tree
 }
 
@@ -292,7 +293,7 @@ func SplitAfter(str string) (ss []string) {
 func (this *Tree) AddKeyStatToTree(keyStat *KeyStat) (err error) {
 	//field := strings.SplitAfter(keyStat.Key, ".")
 	field := SplitAfter(keyStat.Key)
-	fmt.Printf("this.AddNodesToTree(field):%v", field)
+	fmt.Printf("this.AddNodesToTree(field): %v \n", field)
 	node, err := this.AddNodesToTree(field)
 	CheckErr(err, "add nodels to tree")
 	err = node.AddKeyStatToChildren(keyStat)
